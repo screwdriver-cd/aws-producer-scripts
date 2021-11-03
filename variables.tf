@@ -23,7 +23,7 @@ variable "msk_nodes_count" {
 }
 variable "msk_secret_arn" {
   type    = string
-  dessdescription = "AWS Secret Manager ARN"
+  description = "AWS Secret Manager ARN"
 }
 variable "tags" {
   type = map(string)

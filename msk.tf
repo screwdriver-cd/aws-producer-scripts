@@ -163,13 +163,6 @@ locals {
   subnet_cidr_blocks = [for s in data.aws_subnet.privatesubnets : s.cidr_block]
   subnets_ids = toset(local.vpc.private_subnets)
 }
-dynamic "private_subnet_mapping" {
-    for_each = zipmap(local.subnet_ids, local.subnet_cidr_blocks)
-    content {
-      id     = private_subnet_mapping.key
-      cidr = private_subnet_mapping.value
-    }
-}
 
 module "endpoint" {
     for_each = toset(split(",", aws_msk_cluster.sd_msk_cluster.bootstrap_brokers_sasl_scram))
@@ -179,7 +172,14 @@ module "endpoint" {
     port = "${tonumber(split(":", each.key)[1])}"
     hostname = "${split(":", each.key)[0]}"
     broker_id = "${substr(each.key, 0, 3)}"
-    subnet_mapping =  local.private_subnet_mapping
+    subnet_mapping =  private_subnet_mapping
     vpc_id = local.vpc.id
     tags = var.tags
+    dynamic "private_subnet_mapping" {
+    for_each = zipmap(local.subnet_ids, local.subnet_cidr_blocks)
+    content {
+      id     = private_subnet_mapping.key
+      cidr = private_subnet_mapping.value
+    }
+  }
 }

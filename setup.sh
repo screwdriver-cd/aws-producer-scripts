@@ -108,7 +108,7 @@ run_tf_cmd() {
         terraform apply  -auto-approve -var-file=$tfvarfile
     else
         echo "Runnning install script"
-        terraform init -var-file=$tfvarfile
+        terraform init
         # # plan and apply
         terraform plan -var-file=$tfvarfile -out $tfplanoutputfile
         terraform apply -auto-approve -var-file=$tfvarfile $tfplanoutputfile
