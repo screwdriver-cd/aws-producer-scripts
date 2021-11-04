@@ -8,6 +8,7 @@ jobs:
             echo "Install terraform"
             yum update -y
             yum install -y yum-utils
+            yum install -y zip unzip git curl gcc g++ make
             yum-config-manager --add-repo https://rpm.releases.hashicorp.com/RHEL/hashicorp.repo
             yum -y install terraform
             curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b /usr/local/bin v0.20.2
