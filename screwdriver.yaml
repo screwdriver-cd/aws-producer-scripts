@@ -6,10 +6,11 @@ jobs:
       steps:
         - install-dependency: |
             echo "Install terraform"
-            sudo yum install -y yum-utils
-            sudo yum-config-manager --add-repo https://rpm.releases.hashicorp.com/RHEL/hashicorp.repo
-            sudo yum -y install terraform
-            curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b /usr/local/bin v0.18.3
+            yum update -y
+            yum install -y yum-utils
+            yum-config-manager --add-repo https://rpm.releases.hashicorp.com/RHEL/hashicorp.repo
+            yum -y install terraform
+            curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b /usr/local/bin v0.20.2
         - validate: |
             echo "Init using local backend"
             terraform init
