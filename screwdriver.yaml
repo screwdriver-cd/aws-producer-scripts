@@ -1,0 +1,19 @@
+shared:
+  image: centos:centos7
+jobs:
+    test:
+      requires: [~pr, ~commit]
+      steps:
+        - install-dependency: |
+            echo "Install terraform"
+            yum update -y
+            yum install -y yum-utils
+            yum install -y zip unzip git curl gcc g++ make
+            yum-config-manager --add-repo https://rpm.releases.hashicorp.com/RHEL/hashicorp.repo
+            yum -y install terraform
+            curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b /usr/local/bin v0.20.2
+        - validate: |
+            echo "Init using local backend"
+            terraform init
+            echo "Check misconfiguration with trivy"
+            trivy conf --severity HIGH,CRITICAL . 
