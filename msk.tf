@@ -61,13 +61,15 @@ module "msk_service_sg" {
   ]
 }
 
+data "aws_kms_key" "sd_kms_mk" {
+  key_id = "alias/${var.msk_cluster_name}-key"
+}
+
 resource "aws_cloudwatch_log_group" "msk_broker_logs" {
   name = "${var.msk_cluster_name}"
   tags = var.tags
-}
-
-data "aws_kms_key" "sd_kms_mk" {
-  key_id = "alias/${var.msk_cluster_name}-key"
+  retention_in_days = 90
+  kms_key_id = data.aws_kms_key.sd_kms_mk.arn
 }
 
 resource "aws_msk_cluster" "sd_msk_cluster" {
