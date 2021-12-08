@@ -37,8 +37,8 @@ Also a Amazon Secret Manager secret needs to be created manually (for now) with 
 
 ## Instructions
 
-To get started, update the var file with the required details. Please refer to [`env.tfvars`](./env.tfvars) for the variables list.
-Example var file for prod is at [`example-prod`](./example-prod.tfvars).
+To get started, update the var file with the required details. Please refer to [`env.tfvars`](./env.tfvars.tmpl) for the variables list. Remove `.tmpl` extension from file.
+Example var file for prod is at [`example-prod`](./example-prod.tfvars.tmpl).
 
 Second, configure the AWS CLI by running `aws configure` with your AWS credentials and select profile for the desired account.
 ```
@@ -130,7 +130,7 @@ deploy_env        = "beta"
 The config variables are all part of .tfvars file. These variables will be used in creating the resources.
 ### Config Definitions
 
-The following table describes all the configurable variables defined in `setup.tfvars`
+The following table describes all the configurable variables defined in `env.tfvars`
 
 | Name | Type | Description |
 | - | - | - |
@@ -140,7 +140,6 @@ The following table describes all the configurable variables defined in `setup.t
 | msk_ebs_vol <sup>*</sup> | Integer | EBS volume size for MSK cluster |
 | msk_instance_type <sup>*</sup> | String | Type of ec2 instance for kafka cluster  |
 | msk_nodes_count <sup>*</sup> | Integer | Number of nodes for Kafka Cluster |
-| msk_secret_arn <sup>*</sup> | String | AWS Arn of the MSK secret for authentication |
 | msk_secret_name <sup>*</sup> | String | Name of the MSK secret for authentication |
 | vpc_id <sup>*</sup> | String | User VPC Id  |
 | private_subnets <sup>*</sup> | List | List of private subnets |
@@ -164,7 +163,6 @@ tf_backend_bucket="sd-aws-producer-tf-backend-<accountId>" #replace accountId
 msk_ebs_vol=100
 msk_instance_type=""kafka.t3.small""
 msk_nodes_count=3
-msk_secret_arn=""
 msk_secret_name="AmazonMSK_EXAMPLE_SD_SECRET"
 ```
 ### Config for VPC (existing or new)

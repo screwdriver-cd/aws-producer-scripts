@@ -130,6 +130,8 @@ main() {
     check_svc_vars
 
     run_tf_cmd
+
+    get_tf_output
 }
 
 main "$@" 

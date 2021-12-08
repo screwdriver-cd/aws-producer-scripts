@@ -1,0 +1,14 @@
+aws_region        = "us-west-2"
+tf_backend_bucket = "sd-aws-producer-tf-backend-1111111"
+cidr_block        = "10.10.104.0/22"
+private_subnets   = ["10.10.104.0/25", "10.10.104.128/25", "10.10.105.0/25", "10.10.105.128/25"]
+public_subnets    = ["10.10.106.0/25", "10.10.106.128/25", "10.10.107.0/25", "10.10.107.128/25"]
+azs               = ["us-west-2a", "us-west-2b", "us-west-2c", "us-west-2d"]
+vpc_name          = "sd-producer"
+msk_cluster_name  = "prod-sd-msk"
+msk_ebs_vol       = 100
+msk_instance_type = "kafka.t3.small"
+msk_nodes_count   = 3
+msk_secret_name   = "AmazonMSK_PROD_SD_SECRET"
+tags              = { PRODUCT : "SCREWDRIVER", ENVIRONMENT : "prod", SERVICE : "sd/msk" }
+deploy_env        = "prod"

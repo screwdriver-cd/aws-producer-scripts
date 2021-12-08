@@ -5,6 +5,7 @@ variable "aws_region" {
 }
 variable "msk_secret_name" {
   type    = string
+  default = ""
 }
 variable "msk_cluster_name" {
   type    = string
@@ -20,10 +21,6 @@ variable "msk_instance_type" {
 variable "msk_nodes_count" {
   type    = number
   default = 3
-}
-variable "msk_secret_arn" {
-  type    = string
-  description = "AWS Secret Manager ARN"
 }
 variable "tags" {
   type = map(string)
