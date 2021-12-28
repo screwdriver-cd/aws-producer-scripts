@@ -3,12 +3,19 @@
 variable "name" {}
 variable "port" {}
 variable "hostname" {}
-variable "subnet_mapping" { type = map(string) }
+variable "subnet_mapping" { type = list(map(string)) }
 variable "vpc_id" {}
 variable "tags" {}
 variable "broker_id" {}
 data "dns_a_record_set" "bootstrap_ip" {
   host = var.hostname
+}
+
+locals {
+  broker_ip     = data.dns_a_record_set.bootstrap_ip.addrs[0]
+  subnets       =  [ for entry in var.subnet_mapping: entry.id if cidrhost(entry.cidr,0) == 
+      cidrhost(format("%s/%s", local.broker_ip, element(split("/", entry.cidr), 1)), 0) 
+  ]
 }
 
 module "msk_nlb" {
@@ -20,16 +27,7 @@ module "msk_nlb" {
   internal           = true
 
   vpc_id = var.vpc_id
-  #subnets = [ lookup(var.subnets, var.broker_id)]
-  dynamic "subnets" {
-    for_each      = var.subnet_mapping
-    broker_ip     = data.dns_a_record_set.bootstrap_ip.addrs[0]
-    broker_netnum = split(".", broker_ip)[3]
-    cidr_netnum   = split("/", split(".", subnets.cidr)[3])[0]
-    hostnum       = broker_netnum - cidr_netnum
-    cidr          = try(cidrhost(s.cidr, hostnum), null)
-    content       = cidr != null ? [lookup(var.subnet_mapping, cidr)] : []
-  }
+  subnets = local.subnets
 
   target_groups = [
     {
@@ -53,13 +51,15 @@ module "msk_nlb" {
     }
   ]
 
-  tags = tomap("${var.tags}")
+  tags = merge(tomap("${var.tags}"),
+    { "Name" = "${var.name}-nlb" }
+  )
 }
 
 resource "aws_vpc_endpoint_service" "sd_vpc_ep_svc" {
   acceptance_required        = true
   network_load_balancer_arns = ["${module.msk_nlb.lb_arn}"]
   tags = merge(tomap("${var.tags}"),
-    { "NAME" = "${var.name}-ep-svc" }
+    { "Name" = "${var.name}-ep-svc" }
   )
 }

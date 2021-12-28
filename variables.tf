@@ -36,11 +36,10 @@ variable "azs" {
   type    = list(string)
 }
 variable "private_subnets" {
-  default = ["10.10.104.0/25", "10.10.104.128/25", "10.10.105.0/25", "10.10.105.128/25"]
   type    = list(string)
   validation {
     condition = (
-      length(var.private_subnets) < 3
+      length(var.private_subnets) >= 2
     )
     error_message = "The private_subnets must be for each az."
   }
@@ -50,7 +49,7 @@ variable "public_subnets" {
   type    = list(string)
   validation {
     condition = (
-      length(var.public_subnets) < 3
+      length(var.public_subnets) >= 2
     )
     error_message = "The public_subnets must be for each az when creating new vpc."
   }
@@ -63,4 +62,13 @@ variable "vpc_id" {
   type        = string
   description = "VPC id where conusmer function will be created"
   default = null
+}
+variable "kms_key_alias_name" {
+    type = string
+    description = "The alias name of the kms key"
+    default = ""
+}
+variable "deploy_env" {
+    type = string
+    description = "The env name for deploy"
 }

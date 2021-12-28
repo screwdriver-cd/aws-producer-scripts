@@ -37,8 +37,8 @@ Also a Amazon Secret Manager secret needs to be created manually (for now) with 
 
 ## Instructions
 
-To get started, update the var file with the required details. Please refer to [`env.tfvars`](./env.tfvars.tmpl) for the variables list. Remove `.tmpl` extension from file.
-Example var file for prod is at [`example-prod`](./example-prod.tfvars.tmpl).
+To get started, update the var file with the required details. Please refer to [`env.tfvars.json`](./env.tfvars.json.tmpl) for the variables list. Remove `.tmpl` extension from file.
+Example var file for prod is at [`example-prod`](./example-prod.tfvars.json.tmpl).
 
 Second, configure the AWS CLI by running `aws configure` with your AWS credentials and select profile for the desired account.
 ```
@@ -50,11 +50,11 @@ Next, to begin the infrastructure provisioning process:
 
 ### install
 ```sh
-# by default, setup.sh will try to find "env.tfvars"
+# by default, setup.sh will try to find "env.tfvars.json"
 ./setup.sh 
 ```
 
-`./setup.sh` will first validate env.tfvars for all variables and use default for the ones not found, it will then run terraform init, followed by plan and apply to provision infrastructure.
+`./setup.sh` will first validate env.tfvars.json for all variables and use default for the ones not found, it will then run terraform init, followed by plan and apply to provision infrastructure.
 
 For step by step installation, you can use the following options
 ```sh
@@ -130,7 +130,7 @@ deploy_env        = "beta"
 The config variables are all part of .tfvars file. These variables will be used in creating the resources.
 ### Config Definitions
 
-The following table describes all the configurable variables defined in `env.tfvars`
+The following table describes all the configurable variables defined in `env.tfvars.json.json`
 
 | Name | Type | Description |
 | - | - | - |
