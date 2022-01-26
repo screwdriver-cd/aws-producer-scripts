@@ -73,7 +73,7 @@ data "aws_kms_key" "sd_kms_mk" {
 resource "aws_cloudwatch_log_group" "msk_broker_logs" {
   name              = var.msk_cluster_name
   tags              = var.tags
-  retention_in_days = 90
+  retention_in_days = 7
   kms_key_id        = data.aws_kms_key.sd_kms_mk.arn
 }
 
