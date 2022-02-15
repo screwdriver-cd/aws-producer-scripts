@@ -7,10 +7,6 @@ output "private_subnets" {
   description = "List of IDs of private subnets"
   value       = local.vpc.private_subnets
 }
-output "private_subnet_mapping" {
-  description = "Mappind of private subnets to cidr"
-  value       = local.private_subnet_mapping
-}
 
 output "bootstrap_brokers_tls" {
   description = "TLS connection host:port pairs"

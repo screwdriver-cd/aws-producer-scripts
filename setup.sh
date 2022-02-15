@@ -43,7 +43,7 @@ read_var_file() {
     local dirtyfile=0
     if [ ! -z "$data" ];then
         echo "Fix keys: $data"
-        dirtyfile=1
+        dirtyfile=0
     fi
     return $dirtyfile
 }

@@ -167,6 +167,11 @@ num.partitions = 2
 PROPERTIES
 }
 
+# #                              AFTER CLUSTER CREATION
+##*********************************************************************************************#
+# # endpoint should be created after the cluster is ready as the source mapping is dynamic
+# # for first time creation comment endpoint creation and run apply on cluster first
+
 
 data "aws_subnet" "privatesubnets" {
   for_each = toset(local.vpc.private_subnets)
@@ -185,8 +190,7 @@ locals {
   brokers = toset(split(",", aws_msk_cluster.sd_msk_cluster.bootstrap_brokers_sasl_scram))
 }
 
-# endpoint shpuld be created after the cluster is ready as the source mapping is dynamic
-# for first time creation comment endpoint creation and run apply on cluster first
+
 module "endpoint" {
   depends_on     = [aws_msk_cluster.sd_msk_cluster]
   for_each       = local.brokers
@@ -199,3 +203,5 @@ module "endpoint" {
   vpc_id         = local.vpc.id
   tags           = var.tags
 }
+
+#*********************************************************************************************#
