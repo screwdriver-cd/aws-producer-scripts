@@ -14,6 +14,22 @@ jobs:
             curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b /usr/local/bin v0.21.1
         - validate: |
             echo "Init using local backend"
+            json_data=$(cat <<EOF
+            terraform {
+                required_providers {
+                    aws = {
+                        source  = "hashicorp/aws"
+                        version = "~> 3.0"
+                    }
+                }
+                backend "local" {
+                    path = "terraform.tfstate"
+                }
+            }
+            provider "aws" {}
+            EOF
+            )
+            echo "$json_data" > providers.tf
             terraform init
             echo "Check misconfiguration with trivy"
             trivy conf --severity HIGH,CRITICAL . 

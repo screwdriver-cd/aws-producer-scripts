@@ -5,6 +5,9 @@ programname=$0
 CWD=$(dirname ${BASH_SOURCE})
 declare TF_CMD
 declare TF_VAR_FILE_NAME="./env.tfvars.json"
+declare tf_backend_bucket
+declare tf_state_key
+declare tf_region
 
 function usage {
     echo "usage: $programname [-ipavro]"
@@ -23,6 +26,7 @@ check_dependencies() {
     declare -r install_docs=(
         'https://github.com/hashicorp/terraform/releases/latest'
         'https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html'
+        'https://github.com/stedolan/jq/releases/latest'
     )
 
     for ((i = 0, f = 0; i < ${#deps[@]}; i++)); do
@@ -116,13 +120,13 @@ run_tf_cmd() {
     case "$TF_CMD" in
         "destroy") terraform destroy  -auto-approve $tfplanoutputfile ;;
         "validate") terraform validate ;;
-        "init") terraform init -var-file=$tfvarfile ;;
+        "init") terraform init -backend-config "bucket=$tf_backend_bucket" -backend-config "key=$tf_state_key" -backend-config "region=$tf_region" ;;
         "plan") terraform plan -var-file=$tfvarfile -out $tfplanoutputfile ;;
         "refresh") terraform refresh -var-file=$tfvarfile ;;
         "apply") terraform apply -auto-approve $tfplanoutputfile ;;
         "output") get_tf_output ;;
         *)
-            terraform init
+            terraform init -backend-config "bucket=$tf_backend_bucket" -backend-config "key=$tf_state_key" -backend-config "region=$tf_region"
             terraform plan -var-file=$tfvarfile -out $tfplanoutputfile
             terraform apply -auto-approve $tfplanoutputfile
         ;;
@@ -134,12 +138,22 @@ get_tf_output() {
     terraform output $output_var
 }
 
+get_backend_info() {
+    # get backend info
+    tf_backend_bucket=`jq -r '.tf_backend_bucket' $TF_VAR_FILE_NAME`
+    tf_state_key=`jq -r '.tf_state_key' $TF_VAR_FILE_NAME`
+    tf_region=`jq -r '.aws_region' $TF_VAR_FILE_NAME`
+}
+
+
 main() {
     check_dependencies
     
     read_input "$@"
     
     check_svc_vars
+    
+    get_backend_info
 
     run_tf_cmd "$TF_VAR_FILE_NAME" "producer_infra.tfplan"
     
