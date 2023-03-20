@@ -80,7 +80,7 @@ resource "aws_cloudwatch_log_group" "msk_broker_logs" {
 resource "aws_msk_cluster" "sd_msk_cluster" {
   depends_on             = [local.vpc, module.msk_service_sg]
   cluster_name           = var.msk_cluster_name
-  kafka_version          = "2.6.2"
+  kafka_version          = "3.3.2"
   number_of_broker_nodes = length(local.vpc.private_subnets)
 
   broker_node_group_info {
